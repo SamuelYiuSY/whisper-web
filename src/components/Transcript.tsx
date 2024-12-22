@@ -49,10 +49,10 @@ export default function Transcript({ transcribedData }: Props) {
         };
 
         let chunks = transcribedData?.chunks ?? [];
-        let srtContent = chunks.map(chunk => {
+        let srtContent = chunks.map((chunk, index) => {
             const startTime = formatTimeFromSeconds(chunk.timestamp[0]);
-            const endTime = formatTimeFromSeconds(chunk.timestamp[1] ?? -1);
-            return `${startTime}->${endTime}${chunk.text}`;
+            const endTime = formatTimeFromSeconds(chunk.timestamp[1]?? -1);
+            return `${index + 1}\n${startTime} --> ${endTime}\n${chunk.text.trim()}\n`;
           }).join('\n');
 
         const blob = new Blob([srtContent], { type: "text/plain" });
