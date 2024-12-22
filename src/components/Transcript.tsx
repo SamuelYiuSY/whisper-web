@@ -38,6 +38,26 @@ export default function Transcript({ transcribedData }: Props) {
         const blob = new Blob([jsonData], { type: "application/json" });
         saveBlob(blob, "transcript.json");
     };
+    const exportSRT = () => {
+        const formatTimeFromSeconds = (seconds: number): string => {
+            // format time as HH:MM:SS
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+          
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        };
+
+        let chunks = transcribedData?.chunks ?? [];
+        let srtContent = chunks.map(chunk => {
+            const startTime = formatTimeFromSeconds(chunk.timestamp[0]);
+            const endTime = formatTimeFromSeconds(chunk.timestamp[1] ?? -1);
+            return `${startTime}->${endTime}${chunk.text}`;
+          }).join('\n');
+
+        const blob = new Blob([srtContent], { type: "text/plain" });
+        saveBlob(blob, "transcript.srt");
+    };
 
     // Scroll to the bottom when the component updates
     useEffect(() => {
@@ -85,6 +105,12 @@ export default function Transcript({ transcribedData }: Props) {
                         className='text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 inline-flex items-center'
                     >
                         Export JSON
+                    </button>
+                    <button
+                        onClick={exportSRT}
+                        className='text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 inline-flex items-center'
+                    >
+                        Export SRT
                     </button>
                 </div>
             )}
