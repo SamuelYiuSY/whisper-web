@@ -443,7 +443,7 @@ function SettingsModal(props: {
                                 }}
                             ></input>
                             <label htmlFor={"quantize"} className='ms-1'>
-                                Quantized
+                                Quantized (Faster but less accurate)
                             </label>
                         </div>
                     </div>
